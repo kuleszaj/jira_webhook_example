@@ -9,8 +9,6 @@ GEM
     daemons (1.2.3)
     eventmachine (1.0.8)
     ffi (1.9.10)
-    haml (4.0.7)
-      tilt
     listen (3.0.5)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -62,7 +60,6 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth
-  haml
   mail
   pry
   rack-ssl
