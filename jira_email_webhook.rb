@@ -97,8 +97,9 @@ class JiraEmailWebhook < Sinatra::Application
 
     begin
       mail.deliver!
-    rescue Exception => ex
-      logger.error("Something went wrong when sending the e-mail!")
+    rescue StandardError => ex
+      logger.error(ex.class)
+      logger.error('Something went wrong when sending the e-mail!')
       logger.error(ex)
       halt 500
     end
