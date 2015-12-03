@@ -1,0 +1,15 @@
+<div>Hi there,</div>
+<br />
+<div><b><%= @issue %></b> (<%= @title %>) has moved from <b><%= @old_status %></b> to <b><%= @new_status %></b>.</div>
+<% unless @comment.blank? %>
+<h2>Resolution</h2>
+<div><%= convert_jira_issue_for_email @comment %></div>
+<% unless @description.blank? %>
+<h2>Original Description of Request</h2>
+<div><%= convert_jira_issue_for_email @description %></div>
+<% end %>
+<% end %>
+<hr />
+<div>Please respond to this email if you have any questions.<br /><br />Best,<br />- Support Team</div>
+<br />
+<div><i>(This is an automated status update sent from JIRA.)</i></div>

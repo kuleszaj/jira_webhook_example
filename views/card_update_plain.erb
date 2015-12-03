@@ -1,0 +1,26 @@
+Hi there,
+
+<%= @issue %> (<%= @title %>) has moved from <%= @old_status %> to <%= @new_status %>.
+
+<% unless @comment.blank? %>
+* Resolution *
+--------------
+
+<%= @comment %>
+
+<% unless @description.blank? %>
+* Original Description of Request *
+---------------------------------
+
+<%= @description.gsub('---','') %>
+
+<% end %>
+<% end %>
+---
+
+Please respond to this email if you have any questions.
+
+Best,
+- Support Team
+
+(This is an automated status update.)
