@@ -54,6 +54,7 @@ class JiraEmailWebhook < Sinatra::Application
       halt 500 if json.empty?
     rescue JSON::ParserError => ex
       logger.error('Unable to parse JSON.')
+      logger.error(ex)
       halt 500
     ensure
       logger.debug(data)
