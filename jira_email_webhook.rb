@@ -39,30 +39,39 @@ class JiraEmailWebhook < Sinatra::Application
   end
 
   configure :test do
-    app_logger = Logger.new(STDOUT)
-    set :logging, Logger::INFO
+    app_logger = Logger.new('/dev/null')
+    set :logging, Logger::WARN
     use Rack::CommonLogger, app_logger
     set :mail_delivery_method, :test
-  end
-
-  before do
-    env['rack.errors'] = STDOUT
   end
 
   post '/emailupdate' do
     request.body.rewind
 
-    json = JSON.parse(request.body.read)
+    begin
+      data = request.body.read
+      json = JSON.parse(data)
+      halt 500 if json.empty?
+    rescue JSON::ParserError => ex
+      logger.error('Unable to parse JSON.')
+      halt 500
+    ensure
+      logger.debug(data)
+    end
 
-    logger.debug(json)
-
-    @issue = json['issue']['key']
-    @submitter = json['issue']['fields']['customfield_10100']
-    @title = json['issue']['fields']['summary']
-    @description = json['issue']['fields']['description']
-    @old_status = json['transition']['from_status']
-    @new_status = json['transition']['to_status']
-    @comment = json['comment']
+    begin
+      @issue = json['issue']['key']
+      @submitter = json['issue']['fields']['customfield_10100']
+      @title = json['issue']['fields']['summary']
+      @description = json['issue']['fields']['description']
+      @old_status = json['transition']['from_status']
+      @new_status = json['transition']['to_status']
+      @comment = json['comment']
+    rescue NoMethodError => ex
+      logger.error('JSON did not contain expected attributes. Aborting.')
+      logger.error(ex)
+      halt 500
+    end
 
     plain_email = erb :card_update_plain
     html_email = erb :card_update_html
@@ -97,7 +106,6 @@ class JiraEmailWebhook < Sinatra::Application
     begin
       mail.deliver!
     rescue StandardError => ex
-      logger.error(ex.class)
       logger.error('Something went wrong when sending the e-mail!')
       logger.error(ex)
       halt 500
