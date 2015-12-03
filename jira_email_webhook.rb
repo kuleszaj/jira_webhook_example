@@ -5,11 +5,10 @@ require 'logger'
 require 'json'
 require 'mail'
 require 'RedCloth'
-require 'erb'
 
 # JiraEmailWebhook
 class JiraEmailWebhook < Sinatra::Application
-  ::Logger.class_eval { alias_method :write, :'<<' }
+  Logger.class_eval { alias_method :write, :'<<' }
 
   enable :sessions
 
@@ -23,26 +22,26 @@ class JiraEmailWebhook < Sinatra::Application
   set :smtp_password, ENV['SMTP_PASSWORD']
 
   configure :production do
-    app_logger = ::Logger.new(STDOUT)
-    set :logging, ::Logger::WARN
-    use ::Rack::CommonLogger, app_logger
-    use ::Rack::SSL
+    app_logger = Logger.new(STDOUT)
+    set :logging, Logger::WARN
+    use Rack::CommonLogger, app_logger
+    use Rack::SSL
     set :mail_delivery_method, :smtp
     set :dump_errors, false
     set :raise_errors, false
   end
 
   configure :development do
-    app_logger = ::Logger.new(STDOUT)
-    set :logging, ::Logger::DEBUG
-    use ::Rack::CommonLogger, app_logger
+    app_logger = Logger.new(STDOUT)
+    set :logging, Logger::DEBUG
+    use Rack::CommonLogger, app_logger
     set :mail_delivery_method, :test
   end
 
   configure :test do
-    app_logger = ::Logger.new(STDOUT)
-    set :logging, ::Logger::INFO
-    use ::Rack::CommonLogger, app_logger
+    app_logger = Logger.new(STDOUT)
+    set :logging, Logger::INFO
+    use Rack::CommonLogger, app_logger
     set :mail_delivery_method, :test
   end
 
